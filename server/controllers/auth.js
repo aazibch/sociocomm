@@ -20,12 +20,15 @@ export const register = async (req, res) => {
 
         const passwordHash = await bcrypt.hash(filteredBody.password, 12);
 
-        const savedUser = await User.create({
+        let savedUser = await User.create({
             ...filteredBody,
             password: passwordHash,
             viewedProfile: Math.floor(Math.random() * 10000),
             impressions: Math.floor(Math.random() * 10000)
         });
+
+        savedUser = savedUser.toObject();
+        delete savedUser.password;
 
         res.status(201).json(savedUser);
     } catch (error) {
@@ -37,15 +40,12 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
     try {
-        const { email, password } = req.body;
-
-        const user = await User.findOne({ email: email });
-        console.log(req.body);
+        let user = await User.findOne({ email: req.body.email });
 
         let isMatch;
 
         if (user) {
-            isMatch = await bcrypt.compare(password, user.password);
+            isMatch = await bcrypt.compare(req.body.password, user.password);
         }
 
         if (!isMatch) {
@@ -55,6 +55,8 @@ export const login = async (req, res) => {
         }
 
         const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
+
+        user = user.toObject();
         delete user.password;
 
         res.status(200).json({
