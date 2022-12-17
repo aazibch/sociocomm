@@ -40,7 +40,9 @@ export const register = async (req, res) => {
 
 export const login = async (req, res) => {
     try {
-        let user = await User.findOne({ email: req.body.email });
+        let user = await User.findOne({ email: req.body.email }).select(
+            '+password'
+        );
 
         let isMatch;
 

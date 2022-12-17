@@ -8,7 +8,7 @@ export const verifyToken = async (req, res, next) => {
             req.headers.authorization &&
             req.headers.authorization.startsWith('Bearer')
         ) {
-            token = token.split(' ')[1];
+            token = req.headers.authorization.split(' ')[1];
         }
 
         if (!token) {
@@ -18,7 +18,7 @@ export const verifyToken = async (req, res, next) => {
         }
 
         const verifiedUser = jwt.verify(token, process.env.JWT_SECRET);
-
+        console.log('verifiedUser', verifiedUser);
         req.user = verifiedUser;
         next();
     } catch (error) {
