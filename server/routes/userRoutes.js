@@ -11,7 +11,7 @@ router.post('/signup', authController.signup);
 router.get('/me', authController.protect, userController.getUser);
 router.get('/:id', authController.protect, userController.getUser);
 
-router.post(
+router.patch(
     '/me/profilePhoto',
     authController.protect,
     userController.uploadProfilePhoto,

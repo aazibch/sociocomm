@@ -106,14 +106,14 @@ exports.followOrUnfollow = catchAsync(async (req, res, next) => {
     await loggedInUser.save({ validateBeforeSave: false });
     await targetUser.save({ validateBeforeSave: false });
 
-    const updatedUser = await User.findById(loggedInUser.id)
-        .select('following')
-        .populate('following');
+    const following = await Promise.all(
+        loggedInUser.following.map((id) => User.findById(id))
+    );
 
     return res.status(201).json({
         status: 'success',
         data: {
-            following: updatedUser.following
+            following
         }
     });
 });
