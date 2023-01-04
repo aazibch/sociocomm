@@ -97,7 +97,7 @@ exports.protect = catchAsync(async (req, res, next) => {
         return next(new AppError("You're not logged in.", 401));
     }
 
-    const user = await User.findById(decodedToken.id).select('_id');
+    const user = await User.findById(decodedToken.id);
 
     if (!user) return next(new AppError("You're not logged in.", 401));
 
