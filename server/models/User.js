@@ -1,51 +1,94 @@
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
+const validator = require('validator');
 
-const UserSchema = new mongoose.Schema(
+const userSchema = new mongoose.Schema(
     {
         firstName: {
             type: String,
             required: true,
-            min: 2,
-            max: 50
+            minlength: 2,
+            maxlength: 50
         },
         lastName: {
             type: String,
             required: true,
-            min: 2,
-            max: 50
+            minlength: 2,
+            maxlength: 50
         },
         email: {
             type: String,
+            validate: [
+                validator.isEmail,
+                'Please provide a valid email address.'
+            ],
             required: true,
-            max: 50,
+            maxlength: 50,
             unique: true
         },
         password: {
             type: String,
             required: true,
-            min: 5,
+            minlength: 5,
             select: false
         },
-        picturePath: {
+        passwordConfirmation: {
             type: String,
-            default: ''
+            required: true,
+            validate: {
+                validator: function (val) {
+                    return val === this.password;
+                },
+                message: 'Passwords do not match.'
+            }
         },
-        friends: [
+        profilePhoto: {
+            type: String,
+            default: 'default.jpeg'
+        },
+        following: [
             {
-                type: mongoose.Schema.ObjectId,
+                type: mongoose.Schema.Types.ObjectId,
                 ref: 'User'
             }
         ],
-        location: String,
+        followers: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'User'
+            }
+        ],
         occupation: String,
-        viewedProfile: Number,
-        impressions: Number
+        passwordChangeDate: Date
     },
     {
         timestamps: true
     }
 );
 
-const User = mongoose.model('User', UserSchema);
+userSchema.pre('save', async function (next) {
+    if (!this.isModified('password')) return next();
 
-export default User;
+    this.password = await bcrypt.hash(this.password, 12);
+    this.passwordConfirmation = undefined;
+
+    next();
+});
+
+userSchema.pre('save', async function (next) {
+    if (!this.isModified('password') || this.isNew) return next();
+
+    this.passwordChangeDate = Date.now() - 1000;
+    next();
+});
+
+userSchema.methods.isPasswordCorrect = async function (
+    inputPass,
+    encryptedPass
+) {
+    return await bcrypt.compare(inputPass, encryptedPass);
+};
+
+const User = mongoose.model('User', userSchema);
+
+module.exports = User;

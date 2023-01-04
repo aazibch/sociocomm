@@ -1,22 +1,20 @@
-import express from 'express';
-import bodyParser from 'body-parser';
-import mongoose from 'mongoose';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import multer from 'multer';
-import helmet from 'helmet';
-import morgan from 'morgan';
+const express = require('express');
+const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+const cors = require('cors');
+const dotenv = require('dotenv');
+const multer = require('multer');
+const helmet = require('helmet');
+const morgan = require('morgan');
+const AppError = require('./utils/AppError');
+const error = require('./middleware/error');
 
-import path from 'path';
-import { fileURLToPath } from 'url';
-import { register } from './controllers/auth.js';
+const path = require('path');
 
-import authRoutes from './routes/auth.js';
-import userRoutes from './routes/users.js';
+const userRoutes = require('./routes/userRoutes.js');
+const postRoutes = require('./routes/postRoutes.js');
 
 /* CONFIGURATIONS */
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 dotenv.config();
 const app = express();
 app.use(express.json());
@@ -31,30 +29,19 @@ if (process.env.NODE_ENV === 'development') {
     app.use(morgan('common'));
 }
 
-/* FILE STORAGE */
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'public/assets');
-    },
-    filename: (req, file, cb) => {
-        cb(null, file.originalname);
-    }
-});
-const upload = multer({ storage });
-
-/* ROUTES WITH FILES */
-// @todo refactor into the appropriate routes file.
-app.post('/auth/register', upload.single('picture'), register);
-
 /* ROUTES */
-app.use('/auth', authRoutes);
-app.use('/users', userRoutes);
+app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/posts', postRoutes);
+app.all('*', (req, res, next) => {
+    next(new AppError('Route not found.', 404));
+});
+app.use(error);
 
 /* MONGOOSE SETUP */
-const PORT = process.env.PORT || 60001;
+const PORT = process.env.PORT || 3001;
 mongoose.set('strictQuery', false);
 mongoose
-    .connect(process.env.MONGO_URL, {
+    .connect(process.env.DB.replace('<password>', process.env.DB_PASS), {
         useNewUrlParser: true,
         useUnifiedTopology: true
     })

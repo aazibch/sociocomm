@@ -10,4 +10,4 @@ const filterObject = (obj, ...allowedProps) => {
     return updatedObj;
 };
 
-export default filterObject;
+module.exports = filterObject;
