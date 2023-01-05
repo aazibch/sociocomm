@@ -1,29 +1,27 @@
 const express = require('express');
 
 const authController = require('../controllers/authController');
-const uploadImage = require('../middleware/uploadImage');
 
 const postController = require('../controllers/postController.js');
 
 const router = express.Router();
 
-/* CREATE */
+router.get('/feed', authController.protect, postController.getFeedPosts);
+router.get('/', authController.protect, postController.getUserPosts);
+router.get('/:userId', authController.protect, postController.getUserPosts);
+
 router.post(
     '/',
     authController.protect,
-    uploadImage,
+    postController.uploadPostPhoto,
     postController.createPost
 );
 
-/* READ */
-router.get('/', authController.protect, postController.getFeedPosts);
-router.get(
-    '/:userId/posts',
-    authController.protect,
-    postController.getUserPosts
-);
-
 /* UPDATE */
-router.patch('/:id/like', authController.protect, postController.likePost);
+router.patch(
+    '/:id/likes',
+    authController.protect,
+    postController.likeUnlikePost
+);
 
 module.exports = router;

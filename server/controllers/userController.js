@@ -6,12 +6,26 @@ const catchAsync = require('../middleware/catchAsync');
 const AppError = require('../utils/AppError');
 
 exports.getUser = catchAsync(async (req, res, next) => {
+    if (!req.params.id)
+        return res.status(200).json({
+            status: 'success',
+            data: {
+                user: req.user
+            }
+        });
+
     const userId = req.params.id || req.user.id;
-    const user = await User.findById(req.params.id);
+
+    const user = await User.findById(userId);
 
     if (!user) return new AppError('User not found.', 404);
 
-    res.status(200).json(user);
+    res.status(200).json({
+        status: 'success',
+        data: {
+            user
+        }
+    });
 });
 
 const multerStorage = multer.memoryStorage();
@@ -39,7 +53,6 @@ exports.resizeProfilePhoto = catchAsync(async (req, res, next) => {
 
     // Saving filename to multer properties because it's needed in .updateProfilePhoto.
     req.file.filename = `user-${req.user.id}-${Date.now()}.jpg`;
-    console.log(req.file.filename);
 
     await sharp(req.file.buffer)
         .resize(300, 300)
@@ -81,7 +94,7 @@ exports.getFollowing = catchAsync(async (req, res, next) => {
 });
 
 exports.followOrUnfollow = catchAsync(async (req, res, next) => {
-    const loggedInUser = await User.findById(req.user.id);
+    const loggedInUser = req.user;
     const targetUser = await User.findById(req.params.userId);
 
     if (!targetUser) return next(new AppError('User not found.', 404));

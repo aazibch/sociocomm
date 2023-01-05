@@ -1,78 +1,114 @@
+const multer = require('multer');
 const Post = require('../models/Post.js');
 const User = require('../models/User.js');
+const catchAsync = require('../middleware/catchAsync');
 
 const filterObject = require('../utils/filterObject.js');
 
-/* CREATE */
+const multerStorage = multer.memoryStorage();
 
-exports.createPost = async (req, res) => {
-    try {
-        const user = await User.findById(req.userId);
-
-        const filteredBody = filterObject(
-            req.body,
-            'description',
-            'picturePath'
-        );
-
-        filteredBody.author = user._id;
-
-        const newPost = await Post.create(filteredBody);
-
-        res.status(201).json(newPost);
-    } catch (error) {
-        res.status(409).json({
-            message: error.message
-        });
+const multerFilter = (req, file, next) => {
+    if (file.mimetype.startsWith('image')) {
+        return next(null, true);
     }
+
+    next(
+        new AppError('Not an image. Only image formats are accepted.', 400),
+        false
+    );
 };
 
-/* READ */
-exports.getFeedPosts = async (req, res) => {
-    try {
-        const posts = await Post.find();
-        res.status(200).json(posts);
-    } catch (error) {
-        res.status(404).json({
-            message: error.message
-        });
-    }
-};
+const upload = multer({
+    storage: multerStorage,
+    fileFilter: multerFilter
+});
 
-exports.getUserPosts = async (req, res) => {
-    try {
-        const posts = await Post.find({ author: req.params.userId });
-        res.status(200).json(posts);
-    } catch (error) {
-        res.status(404).json({
-            message: error.message
-        });
-    }
-};
+exports.uploadPostPhoto = upload.single('postPhoto');
 
-/* UPDATE */
-exports.likePost = async (req, res) => {
-    try {
-        const post = await Post.findById(req.params.id);
-        const likeIndex = post.likes.indexOf(
-            (userId) => userId.toString() === req.params.userId
-        );
+exports.resizePostPhoto = catchAsync(async (req, res, next) => {
+    if (!req.file) return next();
 
-        const likes = [...post.likes];
-        if (likeIndex) {
-            likes.splice(likeIndex, 1);
-        } else {
-            likes.push(req.params.userId);
+    // Saving filename to multer properties because it's needed in .updateProfilePhoto.
+    req.file.filename = `user-${req.user.id}-${Date.now()}.jpg`;
+
+    await sharp(req.file.buffer)
+        .toFormat('jpeg')
+        .jpeg({ quality: 90 })
+        .toFile(`public/assets/postPhotos/${req.file.filename}`);
+
+    next();
+});
+
+exports.createPost = catchAsync(async (req, res) => {
+    req.body.user = req.user.id;
+
+    const post = await Post.create(req.body);
+
+    res.status(201).json({
+        status: 'success',
+        data: {
+            post
         }
+    });
+});
 
-        const updatedPost = await Post.findByIdAndUpdate(
-            req.params.id,
-            { likes },
-            { new: true }
-        );
+exports.getFeedPosts = catchAsync(async (req, res) => {
+    const feedUsers = [...req.user.following, req.user.id];
 
-        res.status(200).json(updatedPost);
-    } catch (error) {
-        res.status(404).json({ message: error.message });
+    const posts = await Post.find({
+        user: {
+            $in: feedUsers
+        }
+    }).sort('-createdAt');
+
+    res.status(200).json({
+        status: 'success',
+        data: {
+            posts
+        }
+    });
+});
+
+exports.getUserPosts = catchAsync(async (req, res) => {
+    const userId = req.params.userId || req.user.id;
+
+    const posts = await Post.find({
+        user: userId
+    });
+
+    res.status(200).json({
+        status: 'success',
+        data: {
+            posts
+        }
+    });
+});
+
+exports.likeUnlikePost = catchAsync(async (req, res) => {
+    const post = await Post.findById(req.params.id);
+
+    const likeIndex = post.likedBy.findIndex((userId) => {
+        return userId.toString() === req.user.id;
+    });
+
+    const likes = [...post.likedBy];
+
+    if (likeIndex >= 0) {
+        likes.splice(likeIndex, 1);
+    } else {
+        likes.push(req.user.id);
     }
-};
+
+    const updatedPost = await Post.findByIdAndUpdate(
+        req.params.id,
+        { likedBy: likes },
+        { new: true }
+    );
+
+    res.status(200).json({
+        status: 'success',
+        data: {
+            post: updatedPost
+        }
+    });
+});
