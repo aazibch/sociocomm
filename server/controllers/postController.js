@@ -4,6 +4,7 @@ const User = require('../models/User.js');
 const catchAsync = require('../middleware/catchAsync');
 
 const filterObject = require('../utils/filterObject.js');
+const AppError = require('../utils/AppError.js');
 
 const multerStorage = multer.memoryStorage();
 
@@ -109,6 +110,29 @@ exports.likeUnlikePost = catchAsync(async (req, res) => {
         status: 'success',
         data: {
             post: updatedPost
+        }
+    });
+});
+
+exports.deletePost = catchAsync(async (req, res, next) => {
+    const post = await Post.findById(req.params.postId);
+
+    if (!post) {
+        return next(new AppError('Post not found.', 404));
+    }
+
+    if (post.user.toString() !== req.user.id) {
+        return next(
+            new AppError('Not authorized to perform this action.', 403)
+        );
+    }
+
+    await post.remove();
+
+    res.status(204).json({
+        status: 'success',
+        data: {
+            post: post
         }
     });
 });
