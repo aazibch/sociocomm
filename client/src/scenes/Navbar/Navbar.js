@@ -30,7 +30,10 @@ const Navbar = () => {
     const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const user = useSelector((state) => state.user);
+    const user = useSelector((state) => {
+        console.log(state);
+        return state.user;
+    });
     const isNonMobileScreen = useMediaQuery('(min-width: 1000px)');
 
     const theme = useTheme();
@@ -40,6 +43,7 @@ const Navbar = () => {
     const primaryLight = theme.palette.primary.light;
     const alt = theme.palette.background.alt;
 
+    console.log('user', user);
     const fullName = `${user.firstName} ${user.lastName}`;
 
     return (
@@ -84,7 +88,7 @@ const Navbar = () => {
                         )}
                     </IconButton>
                     <Message sx={{ fontSize: '25px' }} />
-                    <Notifications sx={{ fontSize: '25rpx' }} />
+                    <Notifications sx={{ fontSize: '25px' }} />
                     <Help sx={{ fontSize: '25px' }} />
                     <FormControl variant="standard" value={fullName}>
                         <Select
