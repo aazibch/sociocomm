@@ -12,6 +12,8 @@ const signToken = (id) => {
 };
 
 exports.signup = catchAsync(async (req, res, next) => {
+    console.log(req.body);
+
     const filteredBody = filterObject(
         req.body,
         'firstName',

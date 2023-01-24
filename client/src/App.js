@@ -13,8 +13,7 @@ function App() {
     const mode = useSelector((state) => state.mode);
     const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
     const state = useSelector((state) => state);
-
-    console.log('state', state);
+    const isAuthenticated = Boolean(useSelector((state) => state.token));
 
     return (
         <div className="app">
@@ -22,8 +21,15 @@ function App() {
                 <CssBaseline />
                 <Routes>
                     <Route path="/" element={<LoginPage />} />
-                    <Route path="/home" element={<HomePage />} />
-                    <Route path="/profile/:userId" element={<ProfilePage />} />
+                    {isAuthenticated && (
+                        <>
+                            <Route path="/home" element={<HomePage />} />
+                            <Route
+                                path="/profile/:userId"
+                                element={<ProfilePage />}
+                            />
+                        </>
+                    )}
                 </Routes>
             </ThemeProvider>
         </div>

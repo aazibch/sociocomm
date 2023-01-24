@@ -1,8 +1,23 @@
+import { useState } from 'react';
 import { Box, Typography, useTheme, useMediaQuery } from '@mui/material';
+import LoginForm from './LoginForm/LoginForm';
+import RegisterForm from './RegisterForm/RegisterForm';
 
 const LoginPage = () => {
+    const [pageType, setPageType] = useState('login');
     const theme = useTheme();
     const isNonMobileScreen = useMediaQuery('(min-width: 1000px)');
+
+    const switchPageHandler = () => {
+        if (pageType === 'login') setPageType('register');
+
+        if (pageType === 'register') setPageType('login');
+    };
+
+    let form = <LoginForm switchPageHandler={switchPageHandler} />;
+
+    if (pageType === 'register')
+        form = <RegisterForm switchPageHandler={switchPageHandler} />;
 
     return (
         <Box>
@@ -31,6 +46,7 @@ const LoginPage = () => {
                 <Typography fontWeight="500" varient="h5" sx={{ mb: '1.5rem' }}>
                     Welcome to SocioComm.
                 </Typography>
+                {form}
             </Box>
         </Box>
     );

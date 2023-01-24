@@ -43,7 +43,6 @@ const Navbar = () => {
     const primaryLight = theme.palette.primary.light;
     const alt = theme.palette.background.alt;
 
-    console.log('user', user);
     const fullName = `${user.firstName} ${user.lastName}`;
 
     return (
@@ -53,6 +52,7 @@ const Navbar = () => {
                     fontWeight="bold"
                     fontSize="clamp(1rem, 2rem, 2.25rem)"
                     onClick={() => navigate('/home')}
+                    color="primary"
                     sx={{
                         '&:hover': {
                             color: primaryLight,
