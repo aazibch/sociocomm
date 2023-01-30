@@ -51,48 +51,51 @@ const UserWidget = () => {
                 pb="1.1rem"
                 onClick={() => navigate(`/profile/${user._id}`)}
             >
-                <UserImage image={`/profilePhotos/${user.profilePhoto}`} />
-                <Box>
-                    <Typography
-                        variant="h4"
-                        color={dark}
-                        fontWeight="500"
-                        sx={{
-                            '$:hover': {
-                                color: palette.primary.light,
-                                cursor: 'pointer'
-                            }
-                        }}
-                    >
-                        {user.firstName + ' ' + user.lastName}
-                    </Typography>
-                    <Typography color={medium}>
-                        {user.followers.length} Follower
-                        {user.followers.length !== 1 ? 's' : null}
-                    </Typography>
-                </Box>
-                <ManageAccountsOutlined />
-                {/* <Divider /> */}
-                {/* SECOND ROW */}
-                {user.occupation !== '' && (
-                    <Box p="1rem 0">
-                        <Box
-                            display="flex"
-                            alignItems="center"
-                            gap="1rem"
-                            mb="0.5rem"
+                <FlexBetween>
+                    <UserImage image={`/profilePhotos/${user.profilePhoto}`} />
+                    <Box>
+                        <Typography
+                            variant="h4"
+                            color={dark}
+                            fontWeight="500"
+                            sx={{
+                                '$:hover': {
+                                    color: palette.primary.light,
+                                    cursor: 'pointer'
+                                }
+                            }}
                         >
-                            <WorkOutlineOutlined
-                                fontSize="large"
-                                sx={{ color: main }}
-                            />
-                            <Typography color={medium}>
-                                {user.occupation}
-                            </Typography>
-                        </Box>
+                            {user.firstName + ' ' + user.lastName}
+                        </Typography>
+                        <Typography color={medium}>
+                            {user.followers.length} Follower
+                            {user.followers.length !== 1 ? 's' : null}
+                        </Typography>
                     </Box>
-                )}
+                </FlexBetween>
+
+                <ManageAccountsOutlined />
             </FlexBetween>
+            {/* <Divider /> */}
+            {/* SECOND ROW */}
+            {user.occupation !== '' && (
+                <Box p="1rem 0">
+                    <Box
+                        display="flex"
+                        alignItems="center"
+                        gap="1rem"
+                        mb="0.5rem"
+                    >
+                        <WorkOutlineOutlined
+                            fontSize="large"
+                            sx={{ color: main }}
+                        />
+                        <Typography color={medium}>
+                            {user.occupation}
+                        </Typography>
+                    </Box>
+                </Box>
+            )}
         </WidgetWrapper>
     );
 };

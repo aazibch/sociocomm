@@ -18,6 +18,11 @@ const HomePage = () => {
                 <Box flexBasis={isNonMobileScreen ? '26%' : undefined}>
                     <UserWidget />
                 </Box>
+                <Box
+                    flexBasis={isNonMobileScreen ? '42%' : undefined}
+                    mt={isNonMobileScreen ? 'undefined' : '2rem'}
+                ></Box>
+                {isNonMobileScreen && <Box flexBasis="26%"></Box>}
             </Box>
         </Box>
     );
