@@ -28,7 +28,7 @@ const postSchema = mongoose.Schema(
             type: String,
             required: true
         },
-        photoPath: String,
+        postImage: String,
         likedBy: [
             {
                 type: mongoose.Schema.Types.ObjectId,

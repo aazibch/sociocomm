@@ -2,7 +2,7 @@ import {
     ManageAccountsOutlined,
     WorkOutlineOutlined
 } from '@mui/icons-material';
-import { Box, Typography, useTheme } from '@mui/material';
+import { Box, Typography, useTheme, Divider } from '@mui/material';
 
 import UserImage from '../../components/UserImage';
 import FlexBetween from '../../components/FlexBetween';
@@ -51,7 +51,7 @@ const UserWidget = () => {
                 pb="1.1rem"
                 onClick={() => navigate(`/profile/${user._id}`)}
             >
-                <FlexBetween>
+                <FlexBetween gap="1rem">
                     <UserImage image={`/profilePhotos/${user.profilePhoto}`} />
                     <Box>
                         <Typography
@@ -76,25 +76,22 @@ const UserWidget = () => {
 
                 <ManageAccountsOutlined />
             </FlexBetween>
-            {/* <Divider /> */}
             {/* SECOND ROW */}
             {user.occupation !== '' && (
-                <Box p="1rem 0">
-                    <Box
-                        display="flex"
-                        alignItems="center"
-                        gap="1rem"
-                        mb="0.5rem"
-                    >
-                        <WorkOutlineOutlined
-                            fontSize="large"
-                            sx={{ color: main }}
-                        />
-                        <Typography color={medium}>
-                            {user.occupation}
-                        </Typography>
+                <>
+                    <Divider />
+                    <Box p="1rem 0">
+                        <Box display="flex" alignItems="center" gap="1rem">
+                            <WorkOutlineOutlined
+                                fontSize="large"
+                                sx={{ color: main }}
+                            />
+                            <Typography color={medium}>
+                                {user.occupation}
+                            </Typography>
+                        </Box>
                     </Box>
-                </Box>
+                </>
             )}
         </WidgetWrapper>
     );

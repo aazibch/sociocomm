@@ -15,7 +15,8 @@ router.get('/:userId', authController.protect, postController.getUserPosts);
 router.post(
     '/',
     authController.protect,
-    postController.uploadPostPhoto,
+    postController.uploadPostImage,
+    postController.formatPostImage,
     postController.createPost
 );
 

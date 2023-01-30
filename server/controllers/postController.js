@@ -1,4 +1,5 @@
 const multer = require('multer');
+const sharp = require('sharp');
 const Post = require('../models/Post.js');
 const User = require('../models/User.js');
 const catchAsync = require('../middleware/catchAsync');
@@ -24,24 +25,25 @@ const upload = multer({
     fileFilter: multerFilter
 });
 
-exports.uploadPostPhoto = upload.single('postPhoto');
+exports.uploadPostImage = upload.single('postImage');
 
-exports.resizePostPhoto = catchAsync(async (req, res, next) => {
+exports.formatPostImage = catchAsync(async (req, res, next) => {
     if (!req.file) return next();
 
-    // Saving filename to multer properties because it's needed in .updateProfilePhoto.
+    // Saving filename to multer properties because it's needed in .createPost.
     req.file.filename = `user-${req.user.id}-${Date.now()}.jpg`;
 
     await sharp(req.file.buffer)
         .toFormat('jpeg')
         .jpeg({ quality: 90 })
-        .toFile(`public/assets/postPhotos/${req.file.filename}`);
+        .toFile(`public/assets/postImages/${req.file.filename}`);
 
     next();
 });
 
 exports.createPost = catchAsync(async (req, res) => {
     req.body.user = req.user.id;
+    req.body.postImage = req.file.filename;
 
     const post = await Post.create(req.body);
 
