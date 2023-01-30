@@ -12,7 +12,6 @@ import { themeSettings } from './theme';
 function App() {
     const mode = useSelector((state) => state.mode);
     const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
-    const state = useSelector((state) => state);
     const isAuthenticated = Boolean(useSelector((state) => state.token));
 
     return (

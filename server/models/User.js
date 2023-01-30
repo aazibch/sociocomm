@@ -58,7 +58,10 @@ const userSchema = new mongoose.Schema(
                 ref: 'User'
             }
         ],
-        occupation: String,
+        occupation: {
+            type: String,
+            default: ''
+        },
         passwordChangeDate: Date
     },
     {
