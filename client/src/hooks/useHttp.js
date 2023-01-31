@@ -8,12 +8,22 @@ const useHttp = () => {
         setIsLoading(true);
         setError(null);
         try {
+            let body;
+
+            if (requestConfig.body) {
+                if (
+                    requestConfig.headers['Content-Type'] === 'application/json'
+                ) {
+                    body = JSON.stringify(requestConfig.body);
+                } else {
+                    body = requestConfig.body;
+                }
+            }
+
             const response = await fetch(requestConfig.url, {
                 method: requestConfig.method ? requestConfig.method : 'GET',
                 headers: requestConfig.headers ? requestConfig.headers : {},
-                body: requestConfig.body
-                    ? JSON.stringify(requestConfig.body)
-                    : null
+                body
             });
 
             if (!response.ok) {

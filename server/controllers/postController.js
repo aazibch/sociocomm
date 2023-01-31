@@ -41,9 +41,12 @@ exports.formatPostImage = catchAsync(async (req, res, next) => {
     next();
 });
 
-exports.createPost = catchAsync(async (req, res) => {
+exports.createPost = catchAsync(async (req, res, next) => {
     req.body.user = req.user.id;
-    req.body.postImage = req.file.filename;
+
+    if (req.file) {
+        req.body.postImage = req.file.filename;
+    }
 
     const post = await Post.create(req.body);
 

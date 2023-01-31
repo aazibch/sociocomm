@@ -18,12 +18,13 @@ import {
     useMediaQuery,
     Input
 } from '@mui/material';
+import { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import useHttp from '../../hooks/useHttp';
 import FlexBetween from '../../components/FlexBetween';
 import Dropzone from 'react-dropzone';
 import UserImage from '../../components/UserImage';
 import WidgetWrapper from '../../components/WidgetWrapper';
-import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 
 const MyPostWidget = (props) => {
     const [isImage, setIsImage] = useState(false);
@@ -34,9 +35,33 @@ const MyPostWidget = (props) => {
     const { _id } = useSelector((state) => state.user);
     const token = useSelector((state) => state.token);
     const isNonMobileScreen = useMediaQuery('(min-width: 1000px)');
+    const { sendRequest } = useHttp();
 
     const mediumMain = palette.neutral.mediumMain;
     const medium = palette.neutral.medium;
+
+    const handlePost = async () => {
+        const formData = new FormData();
+        formData.append('content', post);
+
+        if (image) {
+            formData.append('postImage', image);
+        }
+
+        const requestConfig = {
+            url: '/api/v1/posts',
+            method: 'POST',
+            headers: { Authorization: `Bearer ${token}` },
+            body: formData
+        };
+
+        const handleResponse = (res) => {
+            setImage(null);
+            setPost('');
+        };
+
+        await sendRequest(requestConfig, handleResponse);
+    };
 
     return (
         <WidgetWrapper>
@@ -113,15 +138,6 @@ const MyPostWidget = (props) => {
                     </Typography>
                 </FlexBetween>
 
-                {/* { isNonMobileScreen ? (
-                    <>
-                        <FlexBetween gap='0.25rem'>
-                            <GifBoxOutlined sx={{color: mediumMain}} />
-                            <Typography color={mediumMain}>Clip</Typography>
-                        </FlexBetween>
-                    </>
-                )} */}
-
                 <Button
                     disabled={!post}
                     sx={{
@@ -129,6 +145,7 @@ const MyPostWidget = (props) => {
                         backgroundColor: palette.primary.main,
                         borderRadius: '3rem'
                     }}
+                    onClick={handlePost}
                 >
                     POST
                 </Button>
