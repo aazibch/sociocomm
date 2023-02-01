@@ -80,7 +80,7 @@ exports.getUserPosts = catchAsync(async (req, res) => {
 
     const posts = await Post.find({
         user: userId
-    });
+    }).populate('comments.user');
 
     res.status(200).json({
         status: 'success',

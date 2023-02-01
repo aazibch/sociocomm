@@ -25,19 +25,33 @@ export const authSlice = createSlice({
             state.user = null;
             state.token = null;
         },
-        setFriends: (state, action) => {
+        addToFollowing: (state, action) => {
             if (state.user) {
-                state.user.friends = action.payload.friends;
+                state.user.following = state.user.following.unshift(
+                    action.payload.user
+                );
             } else {
-                console.error('User friends are non-existent.');
+                console.error('Not logged in.');
+            }
+        },
+        removeFromFollowing: (state, action) => {
+            if (state.user) {
+                state.user.following = state.user.following.filter((user) => {
+                    return (
+                        user._id.toString() !==
+                        action.payload.user._id.toString()
+                    );
+                });
+            } else {
+                console.error('Not logged in.');
             }
         },
         setPosts: (state, action) => {
             state.posts = action.payload.posts;
         },
-        setPost: (state, action) => {
+        updatePost: (state, action) => {
             const updatedPosts = state.posts.map((post) => {
-                if (post._id === action.payload.post_id)
+                if (post._id.toString() === action.payload.post._id.toString())
                     return action.payload.post;
                 return post;
             });
@@ -47,6 +61,13 @@ export const authSlice = createSlice({
     }
 });
 
-export const { setMode, setLogin, setLogout, setFriends, setPosts, setPost } =
-    authSlice.actions;
+export const {
+    setMode,
+    setLogin,
+    setLogout,
+    addToFollowing,
+    removeFromFollowing,
+    setPosts,
+    updatePost
+} = authSlice.actions;
 export default authSlice.reducer;

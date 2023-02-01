@@ -51,7 +51,9 @@ exports.login = catchAsync(async (req, res, next) => {
         );
     }
 
-    const user = await User.findOne({ email }).select('+password');
+    const user = await User.findOne({ email })
+        .select('+password')
+        .populate('followers following');
 
     if (!user || !(await user.isPasswordCorrect(password, user.password))) {
         return next(new AppError('Incorrect email address or password.', 401));

@@ -20,13 +20,14 @@ import {
 } from '@mui/material';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { setPost } from '../../state/auth';
 import useHttp from '../../hooks/useHttp';
 import FlexBetween from '../../components/FlexBetween';
 import Dropzone from 'react-dropzone';
 import UserImage from '../../components/UserImage';
 import WidgetWrapper from '../../components/WidgetWrapper';
 
-const MyPostWidget = (props) => {
+const NewPostWidget = (props) => {
     const [isImage, setIsImage] = useState(false);
     const [image, setImage] = useState(null);
     const [post, setPost] = useState('');
@@ -56,8 +57,9 @@ const MyPostWidget = (props) => {
         };
 
         const handleResponse = (res) => {
+            setPost();
             setImage(null);
-            setPost('');
+            //@todo store response post.
         };
 
         await sendRequest(requestConfig, handleResponse);
@@ -154,6 +156,4 @@ const MyPostWidget = (props) => {
     );
 };
 
-export default MyPostWidget;
-
-// @todo create handlePost() function and attack it as event handler to POST button.
+export default NewPostWidget;
