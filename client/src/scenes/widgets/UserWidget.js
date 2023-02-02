@@ -12,7 +12,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useHttp from '../../hooks/useHttp';
 
-const UserWidget = () => {
+const UserWidget = (props) => {
     const [user, setUser] = useState(null);
     const { palette } = useTheme();
     const navigate = useNavigate();
@@ -23,25 +23,25 @@ const UserWidget = () => {
     const medium = palette.neutral.medium;
     const main = palette.neutral.main;
 
-    useEffect(() => {
-        const getUser = async () => {
-            sendRequest(
-                {
-                    url: '/api/v1/users/me',
-                    headers: { Authorization: `Bearer ${token}` }
-                },
-                (response) => {
-                    setUser(response.data.user);
-                }
-            );
-        };
+    // useEffect(() => {
+    //     const getUser = async () => {
+    //         sendRequest(
+    //             {
+    //                 url: '/api/v1/users/me',
+    //                 headers: { Authorization: `Bearer ${token}` }
+    //             },
+    //             (response) => {
+    //                 setUser(response.data.user);
+    //             }
+    //         );
+    //     };
 
-        getUser();
-    }, [sendRequest, token]);
+    //     getUser();
+    // }, [sendRequest, token]);
 
-    if (!user) {
-        return null;
-    }
+    // if (!user) {
+    //     return null;
+    // }
 
     return (
         <WidgetWrapper>
@@ -49,10 +49,12 @@ const UserWidget = () => {
             <FlexBetween
                 gap="0.5rem"
                 pb="1.1rem"
-                onClick={() => navigate(`/profile/${user._id}`)}
+                onClick={() => navigate(`/profile/${props.user._id}`)}
             >
                 <FlexBetween gap="1rem">
-                    <UserImage image={`/profilePhotos/${user.profilePhoto}`} />
+                    <UserImage
+                        image={`/profilePhotos/${props.user.profilePhoto}`}
+                    />
                     <Box>
                         <Typography
                             variant="h4"
@@ -65,11 +67,11 @@ const UserWidget = () => {
                                 }
                             }}
                         >
-                            {user.firstName + ' ' + user.lastName}
+                            {props.user.firstName + ' ' + props.user.lastName}
                         </Typography>
                         <Typography color={medium}>
-                            {user.followers.length} Follower
-                            {user.followers.length !== 1 ? 's' : null}
+                            {props.user.followers.length} Follower
+                            {props.user.followers.length !== 1 ? 's' : null}
                         </Typography>
                     </Box>
                 </FlexBetween>
@@ -77,7 +79,7 @@ const UserWidget = () => {
                 <ManageAccountsOutlined />
             </FlexBetween>
             {/* SECOND ROW */}
-            {user.occupation !== '' && (
+            {props.user.occupation !== '' && (
                 <>
                     <Divider />
                     <Box p="1rem 0">
@@ -87,7 +89,7 @@ const UserWidget = () => {
                                 sx={{ color: main }}
                             />
                             <Typography color={medium}>
-                                {user.occupation}
+                                {props.user.occupation}
                             </Typography>
                         </Box>
                     </Box>

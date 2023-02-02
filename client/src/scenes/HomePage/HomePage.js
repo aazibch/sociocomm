@@ -8,6 +8,7 @@ import NewPostWidget from '../widgets/NewPostWidget';
 const HomePage = () => {
     const isNonMobileScreen = useMediaQuery('(min-width: 1000px)');
     const user = useSelector((state) => state.user);
+
     return (
         <Box>
             <Navbar />
@@ -19,7 +20,7 @@ const HomePage = () => {
                 justifyContent="space-between"
             >
                 <Box flexBasis={isNonMobileScreen ? '26%' : undefined}>
-                    <UserWidget />
+                    <UserWidget user={user} />
                 </Box>
                 <Box
                     flexBasis={isNonMobileScreen ? '42%' : undefined}

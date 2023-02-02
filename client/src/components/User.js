@@ -22,7 +22,7 @@ const User = (props) => {
     const medium = palette.neutral.medium;
 
     const isFollowing = following.find(
-        (user) => loggedInUser._id.toString() === props.user._id.toString()
+        (user) => loggedInUser._id.toString() === user._id.toString()
     );
 
     const followOrUnfollowUser = () => {
@@ -45,7 +45,10 @@ const User = (props) => {
     return (
         <FlexBetween>
             <FlexBetween gap="1rem">
-                <UserImage image={props.user.profilePhoto} size="55px" />
+                <UserImage
+                    image={`/profilePhotos/${props.user.profilePhoto}`}
+                    size="55px"
+                />
                 <Box
                     onClick={() => {
                         navigate(`/profile/${props.user._id}`);

@@ -65,7 +65,9 @@ exports.getFeedPosts = catchAsync(async (req, res) => {
         user: {
             $in: feedUsers
         }
-    }).sort('-createdAt');
+    })
+        .sort('-createdAt')
+        .populate('user');
 
     res.status(200).json({
         status: 'success',
@@ -80,7 +82,7 @@ exports.getUserPosts = catchAsync(async (req, res) => {
 
     const posts = await Post.find({
         user: userId
-    }).populate('comments.user');
+    }).populate('comments.user user');
 
     res.status(200).json({
         status: 'success',
@@ -109,7 +111,7 @@ exports.likeUnlikePost = catchAsync(async (req, res) => {
         req.params.id,
         { likedBy: likes },
         { new: true }
-    );
+    ).populate('user');
 
     res.status(200).json({
         status: 'success',

@@ -31,6 +31,7 @@ const PostWidget = (props) => {
     const likeOrUnlikePost = () => {
         const requestConfig = {
             url: `api/v1/posts/${props.post._id}/likes`,
+            method: 'PATCH',
             headers: {
                 Authorization: `Bearer ${token}`,
                 'Content-Type': 'application/json'
@@ -91,7 +92,7 @@ const PostWidget = (props) => {
             </FlexBetween>
             {showComments && (
                 <Box mt="0.5rem">
-                    {props.comments.map((comment, i) => (
+                    {props.post.comments.map((comment, i) => (
                         <Box key={comment._id}>
                             <Divider />
                             <Typography
