@@ -96,6 +96,7 @@ exports.getFollowing = catchAsync(async (req, res, next) => {
 exports.followOrUnfollow = catchAsync(async (req, res, next) => {
     const loggedInUser = req.user;
     const targetUser = await User.findById(req.params.userId);
+    let action;
 
     if (!targetUser) return next(new AppError('User not found.', 404));
 
@@ -104,9 +105,11 @@ exports.followOrUnfollow = catchAsync(async (req, res, next) => {
     });
 
     if (!followingTarget) {
+        action = 'followed';
         loggedInUser.following.push(targetUser.id);
         targetUser.followers.push(loggedInUser.id);
     } else {
+        action = 'unfollowed';
         loggedInUser.following = loggedInUser.following.filter(
             (userId) => userId.toString() !== targetUser.id
         );
@@ -119,12 +122,9 @@ exports.followOrUnfollow = catchAsync(async (req, res, next) => {
     await loggedInUser.save({ validateBeforeSave: false });
     await targetUser.save({ validateBeforeSave: false });
 
-    // const updatedLoggedInUser = await User.findById(loggedInUser.id).populate(
-    //     'following'
-    // );
-
     return res.status(201).json({
         status: 'success',
+        action,
         data: {
             user: targetUser
         }

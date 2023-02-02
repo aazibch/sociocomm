@@ -2,7 +2,7 @@ import { PersonAddOutlined, PersonRemoveOutlined } from '@mui/icons-material';
 import { Box, IconButton, Typography, useTheme } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { addToFollowing } from '../state/auth';
+import { addToFollowing, removeFromFollowing } from '../state/auth';
 import useHttp from '../hooks/useHttp';
 import FlexBetween from './FlexBetween';
 import UserImage from './UserImage';
@@ -12,7 +12,6 @@ const User = (props) => {
     const navigate = useNavigate();
     const loggedInUser = useSelector((state) => state.user);
     const token = useSelector((state) => state.token);
-    const following = useSelector((state) => state.user.following);
     const { sendRequest } = useHttp();
 
     const { palette } = useTheme();
@@ -21,9 +20,9 @@ const User = (props) => {
     const main = palette.neutral.main;
     const medium = palette.neutral.medium;
 
-    const isFollowing = following.find(
-        (user) => loggedInUser._id.toString() === user._id.toString()
-    );
+    const isFollowing = loggedInUser.following.some((user) => {
+        return user._id.toString() === props.user._id.toString();
+    });
 
     const followOrUnfollowUser = () => {
         const requestConfig = {
@@ -36,7 +35,13 @@ const User = (props) => {
         };
 
         const handleResponse = (res) => {
-            dispatch(addToFollowing({ user: res.data.user }));
+            if (res.action === 'followed') {
+                dispatch(addToFollowing({ user: res.data.user }));
+            }
+
+            if (res.action === 'unfollowed') {
+                dispatch(removeFromFollowing({ user: res.data.user }));
+            }
         };
 
         sendRequest(requestConfig, handleResponse);

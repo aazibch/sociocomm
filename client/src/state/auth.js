@@ -27,9 +27,10 @@ export const authSlice = createSlice({
         },
         addToFollowing: (state, action) => {
             if (state.user) {
-                state.user.following = state.user.following.unshift(
-                    action.payload.user
-                );
+                state.user.following = [
+                    action.payload.user,
+                    ...state.user.following
+                ];
             } else {
                 console.error('Not logged in.');
             }
