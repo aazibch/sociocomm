@@ -1,5 +1,66 @@
-const ProfilePage = () => {
-    return <div>Profile Page</div>;
+import { Box, useMediaQuery } from '@mui/material';
+import { useEffect, useState, useCallback } from 'react';
+import { useSelector } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import Navbar from '../Navbar/Navbar';
+import FollowingWidget from '../widgets/FollowingWidget';
+import NewPostWidget from '../widgets/NewPostWidget';
+import PostsWidget from '../widgets/PostsWidget';
+import UserWidget from '../widgets/UserWidget';
+import useHttp from '../../hooks/useHttp';
+
+const ProfilePage = (props) => {
+    const [user, setUser] = useState(null);
+    const { userId } = useParams();
+    const token = useSelector((state) => state.token);
+    const isNonMobileScreen = useMediaQuery('(min-width:1000px)');
+    const { sendRequest } = useHttp();
+
+    const getUser = useCallback(() => {
+        const requestConfig = {
+            url: `/api/v1/users/${userId}`,
+            headers: { Authorization: `Bearer ${token}` }
+        };
+
+        const handleResponse = (response) => {
+            setUser(response.data.user);
+        };
+
+        sendRequest(requestConfig, handleResponse);
+    }, [userId, token, sendRequest]);
+
+    useEffect(() => {
+        getUser();
+    }, [getUser]);
+
+    if (!user) return null;
+
+    return (
+        <Box>
+            <Navbar />
+            <Box
+                width="100%"
+                padding="2rem 6%"
+                display={isNonMobileScreen ? 'flex' : 'block'}
+                gap="2rem"
+                justifyContent="center"
+            >
+                <Box flexBasis={isNonMobileScreen ? '26%' : undefined}>
+                    <UserWidget user={user} />
+                    <Box m="2rem 0" />
+                    <FollowingWidget userId={userId} />
+                </Box>
+                <Box
+                    flexBasis={isNonMobileScreen ? '42%' : undefined}
+                    mt={isNonMobileScreen ? undefined : '2rem'}
+                >
+                    <NewPostWidget profilePhoto={user.profilePhoto} />
+                    <Box m="2rem 0" />
+                    <PostsWidget userId={userId} isProfile />
+                </Box>
+            </Box>
+        </Box>
+    );
 };
 
 export default ProfilePage;

@@ -12,7 +12,7 @@ const PostsWidget = (props) => {
 
     const getFeedPosts = useCallback(() => {
         const requestConfig = {
-            url: 'api/v1/posts/feed',
+            url: '/api/v1/posts/feed',
             headers: { Authorization: `Bearer ${token}` }
         };
 
@@ -25,7 +25,7 @@ const PostsWidget = (props) => {
 
     const getUserPosts = useCallback(() => {
         const requestConfig = {
-            url: `api/v1/posts/${props.userId}`,
+            url: `/api/v1/posts/${props.userId}`,
             headers: { Authorization: `Bearer ${token}` }
         };
 

@@ -4,6 +4,7 @@ import Navbar from '../Navbar/Navbar';
 import UserWidget from '../widgets/UserWidget';
 import PostsWidget from '../widgets/PostsWidget';
 import NewPostWidget from '../widgets/NewPostWidget';
+import FollowingWidget from '../widgets/FollowingWidget';
 
 const HomePage = () => {
     const isNonMobileScreen = useMediaQuery('(min-width: 1000px)');
@@ -29,7 +30,11 @@ const HomePage = () => {
                     <NewPostWidget profilePhoto={user.profilePhoto} />
                     <PostsWidget userId={user._id} />
                 </Box>
-                {isNonMobileScreen && <Box flexBasis="26%"></Box>}
+                {isNonMobileScreen && (
+                    <Box flexBasis="26%">
+                        <FollowingWidget userId={user._id} />
+                    </Box>
+                )}
             </Box>
         </Box>
     );

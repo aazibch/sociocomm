@@ -25,6 +25,9 @@ export const authSlice = createSlice({
             state.user = null;
             state.token = null;
         },
+        setFollowing: (state, action) => {
+            state.user.following = action.payload.following;
+        },
         addToFollowing: (state, action) => {
             if (state.user) {
                 state.user.following = [
@@ -66,6 +69,7 @@ export const {
     setMode,
     setLogin,
     setLogout,
+    setFollowing,
     addToFollowing,
     removeFromFollowing,
     setPosts,
