@@ -48,7 +48,10 @@ exports.createPost = catchAsync(async (req, res, next) => {
         req.body.postImage = req.file.filename;
     }
 
-    const post = await Post.create(req.body);
+    let post = await Post.create(req.body);
+
+    post = post.toObject();
+    post.user = req.user;
 
     res.status(201).json({
         status: 'success',

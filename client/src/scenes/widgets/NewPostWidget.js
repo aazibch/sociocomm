@@ -20,7 +20,7 @@ import Dropzone from 'react-dropzone';
 import UserImage from '../../components/UserImage';
 import WidgetWrapper from '../../components/WidgetWrapper';
 
-const NewPostWidget = () => {
+const NewPostWidget = (props) => {
     const [isImage, setIsImage] = useState(false);
     const [image, setImage] = useState(null);
     const [post, setPost] = useState('');
@@ -32,28 +32,12 @@ const NewPostWidget = () => {
     const mediumMain = palette.neutral.mediumMain;
     const medium = palette.neutral.medium;
 
-    const handlePost = async () => {
-        const formData = new FormData();
-        formData.append('content', post);
+    const handlePost = () => {
+        console.log('props', props);
+        props.handlePost({ post, image });
 
-        if (image) {
-            formData.append('postImage', image);
-        }
-
-        const requestConfig = {
-            url: '/api/v1/posts',
-            method: 'POST',
-            headers: { Authorization: `Bearer ${token}` },
-            body: formData
-        };
-
-        const handleResponse = (res) => {
-            setPost();
-            setImage(null);
-            //@todo store response post.
-        };
-
-        await sendRequest(requestConfig, handleResponse);
+        setPost('');
+        setImage(null);
     };
 
     return (

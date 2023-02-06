@@ -4,9 +4,8 @@ import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import Navbar from '../Navbar/Navbar';
 import FollowingWidget from '../widgets/FollowingWidget';
-import NewPostWidget from '../widgets/NewPostWidget';
-import PostsWidget from '../widgets/PostsWidget';
 import UserWidget from '../widgets/UserWidget';
+import PostsSetupWidget from '../widgets/PostsSetupWidget';
 import useHttp from '../../hooks/useHttp';
 
 const ProfilePage = (props) => {
@@ -54,9 +53,9 @@ const ProfilePage = (props) => {
                     flexBasis={isNonMobileScreen ? '42%' : undefined}
                     mt={isNonMobileScreen ? undefined : '2rem'}
                 >
-                    <NewPostWidget />
-                    <Box m="2rem 0" />
-                    <PostsWidget userId={userId} isProfile />
+                    <PostsSetupWidget userId={userId} isProfile />
+                    {/* <NewPostWidget />
+                    <PostsWidget userId={userId} isProfile /> */}
                 </Box>
             </Box>
         </Box>
