@@ -1,11 +1,7 @@
 import {
     EditOutlined,
     DeleteOutlined,
-    AttachFileOutlined,
-    GifBoxOutlined,
-    ImageOutlined,
-    MicOutlined,
-    MoreHorizOutlined
+    ImageOutlined
 } from '@mui/icons-material';
 import {
     Box,
@@ -14,29 +10,24 @@ import {
     InputBase,
     useTheme,
     Button,
-    IconButton,
-    useMediaQuery,
-    Input
+    IconButton
 } from '@mui/material';
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { setPost } from '../../state/auth';
+import { useSelector } from 'react-redux';
 import useHttp from '../../hooks/useHttp';
 import FlexBetween from '../../components/FlexBetween';
 import Dropzone from 'react-dropzone';
 import UserImage from '../../components/UserImage';
 import WidgetWrapper from '../../components/WidgetWrapper';
 
-const NewPostWidget = (props) => {
+const NewPostWidget = () => {
     const [isImage, setIsImage] = useState(false);
     const [image, setImage] = useState(null);
     const [post, setPost] = useState('');
-    const dispatch = useDispatch();
     const { palette } = useTheme();
-    const { _id } = useSelector((state) => state.user);
     const token = useSelector((state) => state.token);
-    const isNonMobileScreen = useMediaQuery('(min-width: 1000px)');
     const { sendRequest } = useHttp();
+    const loggedInUser = useSelector((state) => state.user);
 
     const mediumMain = palette.neutral.mediumMain;
     const medium = palette.neutral.medium;
@@ -68,7 +59,7 @@ const NewPostWidget = (props) => {
     return (
         <WidgetWrapper>
             <FlexBetween gap="1.5rem">
-                <UserImage image={`/profilePhotos/${props.profilePhoto}`} />
+                <UserImage image={loggedInUser.profilePhoto} />
                 <InputBase
                     placeholder="Speak your mind..."
                     onChange={(e) => setPost(e.target.value)}

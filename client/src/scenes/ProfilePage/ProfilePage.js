@@ -48,13 +48,13 @@ const ProfilePage = (props) => {
                 <Box flexBasis={isNonMobileScreen ? '26%' : undefined}>
                     <UserWidget user={user} />
                     <Box m="2rem 0" />
-                    <FollowingWidget userId={userId} />
+                    <FollowingWidget following={user.following} />
                 </Box>
                 <Box
                     flexBasis={isNonMobileScreen ? '42%' : undefined}
                     mt={isNonMobileScreen ? undefined : '2rem'}
                 >
-                    <NewPostWidget profilePhoto={user.profilePhoto} />
+                    <NewPostWidget />
                     <Box m="2rem 0" />
                     <PostsWidget userId={userId} isProfile />
                 </Box>

@@ -16,7 +16,7 @@ exports.getUser = catchAsync(async (req, res, next) => {
 
     const userId = req.params.id || req.user.id;
 
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).populate('following');
 
     if (!user) return new AppError('User not found.', 404);
 

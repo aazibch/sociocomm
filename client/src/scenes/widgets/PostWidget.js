@@ -9,16 +9,11 @@ import FlexBetween from '../../components/FlexBetween';
 import User from '../../components/User';
 import WidgetWrapper from '../../components/WidgetWrapper';
 import { useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { updatePost } from '../../state/auth';
-import useHttp from '../../hooks/useHttp';
+import { useSelector } from 'react-redux';
 
 const PostWidget = (props) => {
     const [showComments, setShowComments] = useState(false);
-    const dispatch = useDispatch();
-    const token = useSelector((state) => state.token);
     const loggedInUser = useSelector((state) => state.user);
-    const { sendRequest } = useHttp();
     const isLiked = props.post.likedBy.some(
         (userId) => userId.toString() === loggedInUser._id.toString()
     );
@@ -27,23 +22,6 @@ const PostWidget = (props) => {
     const { palette } = useTheme();
     const main = palette.neutral.main;
     const primary = palette.primary.main;
-
-    const likeOrUnlikePost = () => {
-        const requestConfig = {
-            url: `api/v1/posts/${props.post._id}/likes`,
-            method: 'PATCH',
-            headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            }
-        };
-
-        const handleResponse = (res) => {
-            dispatch(updatePost({ post: res.data.post }));
-        };
-
-        sendRequest(requestConfig, handleResponse);
-    };
 
     return (
         <WidgetWrapper m="2rem 0">
@@ -63,7 +41,11 @@ const PostWidget = (props) => {
             <FlexBetween mt="0.25rem">
                 <FlexBetween gap="1rem">
                     <FlexBetween gap="0.3rem">
-                        <IconButton onClick={() => likeOrUnlikePost()}>
+                        <IconButton
+                            onClick={() =>
+                                props.handlePostLikeOrUnlike(props.post._id)
+                            }
+                        >
                             {isLiked ? (
                                 <FavoriteOutlined sx={{ color: primary }} />
                             ) : (

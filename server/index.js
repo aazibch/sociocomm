@@ -26,7 +26,7 @@ app.use(cors());
 app.use('/assets', express.static(path.join(__dirname, 'public/assets')));
 
 if (process.env.NODE_ENV === 'development') {
-    app.use(morgan('common'));
+    app.use(morgan('dev'));
 }
 
 /* ROUTES */

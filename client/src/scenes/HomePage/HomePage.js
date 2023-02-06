@@ -8,7 +8,7 @@ import FollowingWidget from '../widgets/FollowingWidget';
 
 const HomePage = () => {
     const isNonMobileScreen = useMediaQuery('(min-width: 1000px)');
-    const user = useSelector((state) => state.user);
+    const loggedInUser = useSelector((state) => state.user);
 
     return (
         <Box>
@@ -21,18 +21,18 @@ const HomePage = () => {
                 justifyContent="space-between"
             >
                 <Box flexBasis={isNonMobileScreen ? '26%' : undefined}>
-                    <UserWidget user={user} />
+                    <UserWidget user={loggedInUser} />
                 </Box>
                 <Box
                     flexBasis={isNonMobileScreen ? '42%' : undefined}
                     mt={isNonMobileScreen ? 'undefined' : '2rem'}
                 >
-                    <NewPostWidget profilePhoto={user.profilePhoto} />
-                    <PostsWidget userId={user._id} />
+                    <NewPostWidget profilePhoto={loggedInUser.profilePhoto} />
+                    <PostsWidget userId={loggedInUser._id} />
                 </Box>
                 {isNonMobileScreen && (
                     <Box flexBasis="26%">
-                        <FollowingWidget userId={user._id} />
+                        <FollowingWidget following={loggedInUser.following} />
                     </Box>
                 )}
             </Box>

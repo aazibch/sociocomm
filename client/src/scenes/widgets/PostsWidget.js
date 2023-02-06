@@ -1,12 +1,10 @@
-import { useEffect, useCallback } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { setPosts } from '../../state/auth';
+import { useEffect, useCallback, useState } from 'react';
+import { useSelector } from 'react-redux';
 import PostWidget from './PostWidget';
 import useHttp from '../../hooks/useHttp';
 
 const PostsWidget = (props) => {
-    const dispatch = useDispatch();
-    const posts = useSelector((state) => state.posts);
+    const [posts, setPosts] = useState();
     const token = useSelector((state) => state.token);
     const { sendRequest } = useHttp();
 
@@ -17,11 +15,11 @@ const PostsWidget = (props) => {
         };
 
         const handleResponse = (response) => {
-            dispatch(setPosts({ posts: response.data.posts }));
+            setPosts(response.data.posts);
         };
 
         sendRequest(requestConfig, handleResponse);
-    }, [dispatch, sendRequest, token]);
+    }, [sendRequest, token]);
 
     const getUserPosts = useCallback(() => {
         const requestConfig = {
@@ -30,11 +28,11 @@ const PostsWidget = (props) => {
         };
 
         const handleResponse = (response) => {
-            dispatch(setPosts({ posts: response.data.posts }));
+            setPosts(response.data.posts);
         };
 
         sendRequest(requestConfig, handleResponse);
-    }, [dispatch, props.userId, sendRequest, token]);
+    }, [props.userId, sendRequest, token]);
 
     useEffect(() => {
         if (props.isProfile) {
@@ -44,10 +42,47 @@ const PostsWidget = (props) => {
         }
     }, [getUserPosts, getFeedPosts, props.isProfile]);
 
+    if (!posts) {
+        return null;
+    }
+
+    const likeOrUnlikePost = (postId) => {
+        const requestConfig = {
+            url: `/api/v1/posts/${postId}/likes`,
+            method: 'PATCH',
+            headers: {
+                Authorization: `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        };
+
+        const handleResponse = (res) => {
+            const updatedPosts = posts.map((post) => {
+                if (post._id.toString() === postId) {
+                    return res.data.post;
+                }
+
+                return post;
+            });
+
+            setPosts(updatedPosts);
+        };
+
+        sendRequest(requestConfig, handleResponse);
+    };
+
+    const handlePostLikeOrUnlike = (postId) => {
+        likeOrUnlikePost(postId.toString());
+    };
+
     return (
         <>
             {posts.map((post) => (
-                <PostWidget key={post._id} post={post} />
+                <PostWidget
+                    handlePostLikeOrUnlike={handlePostLikeOrUnlike}
+                    key={post._id}
+                    post={post}
+                />
             ))}
         </>
     );

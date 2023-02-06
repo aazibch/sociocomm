@@ -7,41 +7,15 @@ import { Box, Typography, useTheme, Divider } from '@mui/material';
 import UserImage from '../../components/UserImage';
 import FlexBetween from '../../components/FlexBetween';
 import WidgetWrapper from '../../components/WidgetWrapper';
-import { useSelector } from 'react-redux';
-import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import useHttp from '../../hooks/useHttp';
 
 const UserWidget = (props) => {
-    const [user, setUser] = useState(null);
     const { palette } = useTheme();
     const navigate = useNavigate();
-    const token = useSelector((state) => state.token);
-    const { sendRequest } = useHttp();
 
     const dark = palette.neutral.dark;
     const medium = palette.neutral.medium;
     const main = palette.neutral.main;
-
-    // useEffect(() => {
-    //     const getUser = async () => {
-    //         sendRequest(
-    //             {
-    //                 url: '/api/v1/users/me',
-    //                 headers: { Authorization: `Bearer ${token}` }
-    //             },
-    //             (response) => {
-    //                 setUser(response.data.user);
-    //             }
-    //         );
-    //     };
-
-    //     getUser();
-    // }, [sendRequest, token]);
-
-    // if (!user) {
-    //     return null;
-    // }
 
     return (
         <WidgetWrapper>
@@ -52,9 +26,7 @@ const UserWidget = (props) => {
                 onClick={() => navigate(`/profile/${props.user._id}`)}
             >
                 <FlexBetween gap="1rem">
-                    <UserImage
-                        image={`/profilePhotos/${props.user.profilePhoto}`}
-                    />
+                    <UserImage image={props.user.profilePhoto} />
                     <Box>
                         <Typography
                             variant="h4"

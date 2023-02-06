@@ -12,8 +12,6 @@ const signToken = (id) => {
 };
 
 exports.signup = catchAsync(async (req, res, next) => {
-    console.log(req.body);
-
     const filteredBody = filterObject(
         req.body,
         'firstName',
@@ -95,9 +93,6 @@ exports.protect = catchAsync(async (req, res, next) => {
             process.env.JWT_SECRET
         );
     } catch (err) {
-        console.log('jwt err', err);
-        //@todo send logout response if necessary
-
         return next(new AppError("You're not logged in.", 401));
     }
 

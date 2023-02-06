@@ -2,10 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
     mode: 'light',
-    user: {
-        firstName: 'John',
-        lastName: 'Doe'
-    },
+    user: null,
     token: null,
     posts: []
 };
@@ -49,18 +46,6 @@ export const authSlice = createSlice({
             } else {
                 console.error('Not logged in.');
             }
-        },
-        setPosts: (state, action) => {
-            state.posts = action.payload.posts;
-        },
-        updatePost: (state, action) => {
-            const updatedPosts = state.posts.map((post) => {
-                if (post._id.toString() === action.payload.post._id.toString())
-                    return action.payload.post;
-                return post;
-            });
-
-            state.posts = updatedPosts;
         }
     }
 });
@@ -71,8 +56,6 @@ export const {
     setLogout,
     setFollowing,
     addToFollowing,
-    removeFromFollowing,
-    setPosts,
-    updatePost
+    removeFromFollowing
 } = authSlice.actions;
 export default authSlice.reducer;

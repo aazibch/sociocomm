@@ -18,7 +18,6 @@ const User = (props) => {
     const primaryLight = palette.primary.light;
     const primaryDark = palette.primary.dark;
     const main = palette.neutral.main;
-    const medium = palette.neutral.medium;
 
     const isFollowing = loggedInUser.following.some((user) => {
         return user._id.toString() === props.user._id.toString();
@@ -50,10 +49,7 @@ const User = (props) => {
     return (
         <FlexBetween>
             <FlexBetween gap="1rem">
-                <UserImage
-                    image={`/profilePhotos/${props.user.profilePhoto}`}
-                    size="55px"
-                />
+                <UserImage image={props.user.profilePhoto} size="55px" />
                 <Box
                     onClick={() => {
                         navigate(`/profile/${props.user._id}`);
