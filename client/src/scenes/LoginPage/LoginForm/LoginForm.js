@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import useHttp from '../../../hooks/useHttp';
 import {
     Box,
@@ -16,6 +16,7 @@ import { useDispatch } from 'react-redux';
 import { setLogin } from '../../../state/auth';
 import Dropzone from 'react-dropzone';
 import FlexBetween from '../../../components/FlexBetween';
+import AuthContext from '../../../store/auth-context';
 
 const loginSchema = yup.object().shape({
     email: yup
@@ -36,6 +37,7 @@ const LoginForm = (props) => {
     const navigate = useNavigate();
     const { sendRequest } = useHttp();
     const isNonMobile = useMediaQuery('(min-width: 600px)');
+    const authCtx = useContext(AuthContext);
 
     const handleFormSubmit = async (values, onSubmitProps) => {
         const requestConfig = {
@@ -48,9 +50,16 @@ const LoginForm = (props) => {
         };
 
         const handleResponse = (response) => {
-            dispatch(
-                setLogin({ user: response.data.user, token: response.token })
-            );
+            // dispatch(
+            //     setLogin({ user: response.data.user, token: response.token })
+            // );
+
+            console.log('loginForm', response);
+
+            authCtx.setLoginHandler({
+                user: response.data.user,
+                token: response.token
+            });
             navigate('/home');
         };
 

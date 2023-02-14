@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import {
     Box,
     IconButton,
@@ -25,15 +25,18 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setMode, setLogout } from '../../state/auth';
 import { useNavigate } from 'react-router-dom';
 import FlexBetween from '../../components/FlexBetween';
+import AuthContext from '../../store/auth-context';
 
 const Navbar = () => {
     const [isMobileMenuToggled, setIsMobileMenuToggled] = useState(false);
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const user = useSelector((state) => {
-        return state.user;
-    });
+    // const user = useSelector((state) => {
+    //     return state.user;
+    // });
     const isNonMobileScreen = useMediaQuery('(min-width: 1000px)');
+    const authCtx = useContext(AuthContext);
+    const user = authCtx.user;
 
     const theme = useTheme();
     const neutralLight = theme.palette.neutral.light;
@@ -79,7 +82,7 @@ const Navbar = () => {
             {/* Desktop NAV */}
             {isNonMobileScreen ? (
                 <FlexBetween gap="2rem">
-                    <IconButton onClick={() => dispatch(setMode())}>
+                    <IconButton onClick={() => authCtx.setModeHandler()}>
                         {theme.palette.mode === 'dark' ? (
                             <DarkMode sx={{ fontSize: '25px' }} />
                         ) : (
@@ -110,7 +113,9 @@ const Navbar = () => {
                             <MenuItem value={fullName}>
                                 <Typography>{fullName}</Typography>
                             </MenuItem>
-                            <MenuItem onClick={() => dispatch(setLogout())}>
+                            <MenuItem
+                                onClick={() => authCtx.setLogoutHandler()}
+                            >
                                 Logout
                             </MenuItem>
                         </Select>
@@ -191,7 +196,9 @@ const Navbar = () => {
                                 <MenuItem value={fullName}>
                                     <Typography>{fullName}</Typography>
                                 </MenuItem>
-                                <MenuItem onClick={() => dispatch(setLogout())}>
+                                <MenuItem
+                                    onClick={() => authCtx.setLogoutHandler()}
+                                >
                                     Logout
                                 </MenuItem>
                             </Select>

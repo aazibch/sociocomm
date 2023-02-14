@@ -8,12 +8,15 @@ import { Box, Divider, IconButton, Typography, useTheme } from '@mui/material';
 import FlexBetween from '../../components/FlexBetween';
 import User from '../../components/User';
 import WidgetWrapper from '../../components/WidgetWrapper';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useSelector } from 'react-redux';
+import AuthContext from '../../store/auth-context';
 
 const PostWidget = (props) => {
     const [showComments, setShowComments] = useState(false);
-    const loggedInUser = useSelector((state) => state.user);
+    const authCtx = useContext(AuthContext);
+    // const loggedInUser = useSelector((state) => state.user);
+    const loggedInUser = authCtx.user;
     const isLiked = props.post.likedBy.some(
         (userId) => userId.toString() === loggedInUser._id.toString()
     );

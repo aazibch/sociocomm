@@ -1,3 +1,4 @@
+import { useContext } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import {
@@ -13,6 +14,7 @@ import { setLogin } from '../../../state/auth';
 
 import useHttp from '../../../hooks/useHttp';
 import { useNavigate } from 'react-router-dom';
+import AuthContext from '../../../store/auth-context';
 
 const registerSchema = yup.object().shape({
     firstName: yup.string().required('Field is required.'),
@@ -41,6 +43,7 @@ const RegisterForm = (props) => {
     const { sendRequest } = useHttp();
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const authCtx = useContext(AuthContext);
 
     const handleFormSubmit = async (values, onSubmitProps) => {
         const requestConfig = {
@@ -53,9 +56,13 @@ const RegisterForm = (props) => {
         };
 
         const handleResponse = (response) => {
-            dispatch(
-                setLogin({ user: response.data.user, token: response.token })
-            );
+            // dispatch(
+            //     setLogin({ user: response.data.user, token: response.token })
+            // );
+            authCtx.setLoginHandler({
+                user: response.data.user,
+                token: response.token
+            });
             navigate('/home');
         };
 

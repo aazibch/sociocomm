@@ -1,13 +1,16 @@
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useContext } from 'react';
 import { useSelector } from 'react-redux';
 import useHttp from '../../hooks/useHttp';
+import AuthContext from '../../store/auth-context';
 
 import NewPostWidget from './NewPostWidget';
 import PostsWidget from './PostsWidget';
 
 const PostsSetupWidget = (props) => {
     const [posts, setPosts] = useState(null);
-    const token = useSelector((state) => state.token);
+    const authCtx = useContext(AuthContext);
+    // const token = useSelector((state) => state.token);
+    const token = authCtx.token;
     const { sendRequest } = useHttp();
 
     const getFeedPosts = useCallback(() => {

@@ -1,13 +1,17 @@
+import { useContext } from 'react';
 import { Box, useMediaQuery } from '@mui/material';
 import { useSelector } from 'react-redux';
 import Navbar from '../Navbar/Navbar';
 import UserWidget from '../widgets/UserWidget';
 import FollowingWidget from '../widgets/FollowingWidget';
 import PostsSetupWidget from '../widgets/PostsSetupWidget';
+import AuthContext from '../../store/auth-context';
 
 const HomePage = () => {
+    const authCtx = useContext(AuthContext);
     const isNonMobileScreen = useMediaQuery('(min-width: 1000px)');
-    const loggedInUser = useSelector((state) => state.user);
+    // const loggedInUser = useSelector((state) => state.user);
+    const loggedInUser = authCtx.user;
 
     return (
         <Box>

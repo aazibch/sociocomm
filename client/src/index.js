@@ -19,6 +19,7 @@ import {
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import { PersistGate } from 'redux-persist/integration/react';
+import AuthProvider from './store/AuthProvider';
 
 const persistConfig = { key: 'root', storage, version: 1 };
 const persistedReducer = persistReducer(persistConfig, authReducer);
@@ -44,7 +45,9 @@ root.render(
     <BrowserRouter>
         <Provider store={store}>
             <PersistGate loading={null} persistor={persistStore(store)}>
-                <App />
+                <AuthProvider>
+                    <App />
+                </AuthProvider>
             </PersistGate>
         </Provider>
     </BrowserRouter>

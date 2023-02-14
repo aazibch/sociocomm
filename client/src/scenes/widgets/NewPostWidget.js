@@ -12,22 +12,27 @@ import {
     Button,
     IconButton
 } from '@mui/material';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useSelector } from 'react-redux';
 import useHttp from '../../hooks/useHttp';
 import FlexBetween from '../../components/FlexBetween';
 import Dropzone from 'react-dropzone';
 import UserImage from '../../components/UserImage';
 import WidgetWrapper from '../../components/WidgetWrapper';
+import AuthContext from '../../store/auth-context';
 
 const NewPostWidget = (props) => {
     const [isImage, setIsImage] = useState(false);
     const [image, setImage] = useState(null);
     const [post, setPost] = useState('');
     const { palette } = useTheme();
-    const token = useSelector((state) => state.token);
     const { sendRequest } = useHttp();
-    const loggedInUser = useSelector((state) => state.user);
+    const authCtx = useContext(AuthContext);
+
+    const token = authCtx.token;
+    const loggedInUser = authCtx.user;
+    // const token = useSelector((state) => state.token);
+    // const loggedInUser = useSelector((state) => state.user);
 
     const mediumMain = palette.neutral.mediumMain;
     const medium = palette.neutral.medium;

@@ -3,16 +3,20 @@ import HomePage from './scenes/HomePage/HomePage';
 import LoginPage from './scenes/LoginPage/LoginPage';
 import ProfilePage from './scenes/ProfilePage/ProfilePage';
 
-import { useMemo } from 'react';
+import { useMemo, useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { CssBaseline, ThemeProvider } from '@mui/material';
 import { createTheme } from '@mui/material/styles';
 import { themeSettings } from './theme';
+import AuthContext from './store/auth-context';
 
 function App() {
-    const mode = useSelector((state) => state.mode);
+    const authCtx = useContext(AuthContext);
+    // const mode = useSelector((state) => state.mode);
+    const mode = authCtx.mode;
     const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
-    const isAuthenticated = Boolean(useSelector((state) => state.token));
+    // const isAuthenticated = Boolean(useSelector((state) => state.token));
+    const isAuthenticated = Boolean(authCtx.token);
 
     return (
         <div className="app">

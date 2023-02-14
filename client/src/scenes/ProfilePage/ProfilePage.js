@@ -1,5 +1,5 @@
 import { Box, useMediaQuery } from '@mui/material';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useContext } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import Navbar from '../Navbar/Navbar';
@@ -7,11 +7,14 @@ import FollowingWidget from '../widgets/FollowingWidget';
 import UserWidget from '../widgets/UserWidget';
 import PostsSetupWidget from '../widgets/PostsSetupWidget';
 import useHttp from '../../hooks/useHttp';
+import AuthContext from '../../store/auth-context';
 
 const ProfilePage = (props) => {
     const [user, setUser] = useState(null);
     const { userId } = useParams();
-    const token = useSelector((state) => state.token);
+    const authCtx = useContext(AuthContext);
+    // const token = useSelector((state) => state.token);
+    const token = authCtx.token;
     const isNonMobileScreen = useMediaQuery('(min-width:1000px)');
     const { sendRequest } = useHttp();
 
